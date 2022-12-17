@@ -1,0 +1,86 @@
+html {
+    height: 100%;
+}
+
+body {
+    background-color: var(--surface-ground);
+    font-family: var(--font-family);
+    font-weight: 400;
+    color: var(--text-color);
+    margin: 0;
+    height: 100%;
+}
+
+.app {
+    height: 100%;
+}
+.app__main-grid {
+    height: 100%;
+}
+
+.left-col {
+    background-color: var(--blue-900);
+    width: 320px;
+}
+
+.block-name {
+    padding: 0.5rem;
+    background-color: var(--blue-600);
+}
+
+.block {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+.block__label {
+    padding-bottom: 0.5rem;
+}
+
+.block-fan-speed__buttons .p-button {
+    width: 39px;
+    height: 39px;
+    justify-content: center;
+}
+
+.block-airintake__buttons .p-button {
+    padding: 5px;
+    width: 39px;
+    height: 39px;
+    justify-content: center;
+}
+.block-airintake__buttons svg {
+    width: 100%;
+    stroke: #212529;
+}
+.block-airintake__buttons .p-button-outlined svg {
+    stroke: #64b5f6;
+}
+
+.block-temperature__input {
+    font-size: 20px;
+}
+.block-temperature__output {
+    font-size: 20px;
+}
+.block-temperature__icon {
+    width: 80px;
+}
+.block-temperature__icon svg {
+    fill: transparent;
+    stroke: var(--text-color);
+}
+
+.block-heater .p-inputnumber .p-inputtext {
+    width: 50px;
+}
+
+.block-filters__days {
+    font-size: 20px;
+}
+.block-filters .p-progressbar {
+    height: 5px;
+}
+
+.p-chart {
+    position: relative;
+}

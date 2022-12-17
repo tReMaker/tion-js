@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Tion 3S</title>
+<link href="https://unpkg.com/primevue/resources/themes/vela-blue/theme.css" rel="stylesheet">
+<link href="https://unpkg.com/primevue/resources/primevue.min.css" rel="stylesheet">
+<link href="https://unpkg.com/primeicons/primeicons.css" rel="stylesheet">
+<link href="https://unpkg.com/primeflex@3.1.0/primeflex.css" rel="stylesheet">
+<link href="https://unpkg.com/primeflex@3.1.0/themes/vela-blue.css" rel="stylesheet">
+<link href="app.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/primevue@^3/core/core.min.js"></script>
+<script src="https://unpkg.com/primevue@^3/inputswitch/inputswitch.min.js"></script>
+</head>
+<body>
+<div id="app" class="app">
+    <div class="grid grid-nogutter app__main-grid">
+        <div class="col-fixed left-col">
+            <div class="flex align-items-center justify-content-between block-name">
+                <div>{{message}}</div>
+                <p-inputswitch v-model="enable" :disabled="!connected" @input="onInputEnable"></p-inputswitch>
+            </div>
+            <div class="block block-fan-speed">
+                <div class="block__label">Скороть вентилятора</div>
+                <div class="block__buttons flex justify-content-between block-fan-speed__buttons">
+                    <p-button label="1" :class="['p-button-rounded', {'p-button-outlined': fanSpeed !== 1}]" :disabled="!enable" @click="setFanSpeed(1)"></p-button>
+                    <p-button label="2" :class="['p-button-rounded', {'p-button-outlined': fanSpeed !== 2}]" :disabled="!enable" @click="setFanSpeed(2)"></p-button>
+                    <p-button label="3" :class="['p-button-rounded', {'p-button-outlined': fanSpeed !== 3}]" :disabled="!enable" @click="setFanSpeed(3)"></p-button>
+                    <p-button label="4" :class="['p-button-rounded', {'p-button-outlined': fanSpeed !== 4}]" :disabled="!enable" @click="setFanSpeed(4)"></p-button>
+                    <p-button label="5" :class="['p-button-rounded', {'p-button-outlined': fanSpeed !== 5}]" :disabled="!enable" @click="setFanSpeed(5)"></p-button>
+                    <p-button label="6" :class="['p-button-rounded', {'p-button-outlined': fanSpeed !== 6}]" :disabled="!enable" @click="setFanSpeed(6)"></p-button>
+                </div>
+            </div>
+            <div class="block block-airintake">
+                <div class="block__label">Забор воздуха</div>
+                <div class="block__buttons flex justify-content-between block-airintake__buttons">
+                    <p-button :class="['p-button-rounded', {'p-button-outlined': airintakeMode !== 2}]" :disabled="!enable" @click="setAirintakeMode(2)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 14" fill="#00000000" stroke="#4f4f4f">
+                            <path d="M 10.985 1 L 17 7.13 L 10.985 13" stroke-width="2.5" />
+                            <path d="M 17 7 L 0 7" stroke-width="2.5" stroke-linejoin="round" />
+                        </svg>
+                    </p-button>
+                    <p-button :class="['p-button-rounded', {'p-button-outlined': airintakeMode !== 0}]" :disabled="!enable" @click="setAirintakeMode(0)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 24" fill="#00000000" stroke="#4f4f4f">
+                            <path d="M 8.467 9.06 L 4.2 12 L 1 8.243" stroke-width="2" />
+                            <path d="M 21.533 14.94 L 25.8 12 L 29 15.757" stroke-width="2" />
+                            <path d="M 4.069 12 C 4.069 5.959 8.997 1 15 1 C 20.017 1 24.318 4.426 25.573 9.115" stroke-width="2" />
+                            <path d="M 25.931 12 C 25.931 18.041 21.003 23 15 23 C 9.982 23 5.771 19.664 4.517 14.976" stroke-width="2" />
+                        </svg>
+                    </p-button>
+                    <p-button :class="['p-button-rounded', {'p-button-outlined': airintakeMode !== 1}]" :disabled="!enable" @click="setAirintakeMode(1)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 24" fill="#00000000" stroke="#4f4f4f">
+                            <path d="M 8.467 9.06 L 4.2 12 L 1 8.243" stroke-width="2" />
+                            <path d="M 21.533 14.94 L 25.8 12 L 29 15.757" stroke-width="2" />
+                            <path d="M 4.069 12 C 4.069 5.959 8.997 1 15 1 C 20.018 1 24.318 4.426 25.573 9.115" stroke-width="2" />
+                            <path d="M 25.931 12 C 25.931 18.041 21.003 23 15 23 C 9.982 23 5.771 19.664 4.517 14.975" stroke-width="2" />
+                            <path d="M 16.523 8.754 L 19.659 12 L 16.523 15.156" stroke-width="2" />
+                            <path d="M 19.659 11.91 L 10.699 11.91" stroke-width="2" stroke-linejoin="round" />
+                        </svg>
+                    </p-button>
+                </div>
+            </div>
+            <div class="block block-temperature">
+                <div class="block__label">Температура воздуха</div>
+
+                <div class="flex justify-content-evenly">
+                    <div class="block-temperature__input">{{temperatureIn}}&deg;C</div>
+                    <div class="block-temperature__icon">
+                        <svg viewBox="0 0 83.03 28.14">
+                            <polyline points="76.32 8.45 82.32 14.45 76.32 20.45" />
+                            <line x1="82.32" y1="14.45" x2="62.07" y2="14.45" />
+                            <polyline points="14.75 8.45 20.75 14.45 14.75 20.45" />
+                            <line x1="20.75" y1="14.45" x2="0.5" y2="14.45" />
+                            <rect x="30.41" y="0.5" width="23" height="27.14" rx="1.87" ry="1.87" />
+                            <path d="M30.49,18.88l8.7-8.7a3.9,3.9,0,0,1,5.5,0l8.7,8.7" />
+                        </svg>
+                    </div>
+                    <div class="block-temperature__output">{{temperatureOut}}&deg;C</div>
+                </div>
+            </div>
+            <div class="block block-heater">
+                <div class="block__label">Подогрев воздуха, &deg;C</div>
+                <div class="flex justify-content-between align-items-center">
+                    <p-inputnumber v-model="heaterTemperature" show-buttons button-layout="horizontal"
+                        increment-button-icon="pi pi-plus" decrement-button-icon="pi pi-minus"
+                        suffix="℃" :min="0" :max="30"
+                        :disabled="!enable || !heater"></p-inputnumber>
+                    <p-inputswitch v-model="heater" :disabled="!enable"></p-inputswitch>
+                </div>
+            </div>
+            <div class="block block-filters">
+                <div class="block__label flex justify-content-between align-items-center">
+                    <div>Дней до замены фильтров</div>
+                    <div class="block-filters__days">{{resourceFilters}}</div>
+                </div>
+                <p-progressbar :value="resourceFiltersPercentage" :show-value="false"></p-progressbar>
+            </div>
+            <div v-if="connected" class="block">
+                <p-button label="Disconnect" @click="disconnect" style="width:100%;"></p-button>
+            </div>
+        </div>
+        <div class="col-9">
+            <div v-if="connected">
+                <p-chart ref="chart" />
+            </div>
+            <div v-else class="flex justify-content-center align-items-center" style="height: 100%;">
+                <p-button label="Connect" @click="connect" style="width: 100px;"></p-button>
+                &nbsp; or &nbsp;
+                <p-button label="Pair" @click="pair" style="width: 100px;"></p-button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
