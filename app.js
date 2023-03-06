@@ -11,6 +11,7 @@ const WRITE_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 const COMMAND_PAIR = 5;
 const COMMAND_REQUEST_PARAMS = 1;
 const COMMAND_SET_PARAMS = 2;
+const COMMAND_SET_TIME_PARAMS = 3;
 
 /*
 public static final byte[] PAIRING_DEVICE = {5};
@@ -185,6 +186,7 @@ const App = {
             heaterTemperature: 0,
             sound: false,
             resourceFilters: 360,
+            time: '',
         }
     },
     computed: {
@@ -198,8 +200,25 @@ const App = {
     },
     mounted() {
         this.timer = null;
+
+        const now = new Date();
+        this.time = this.formatTime(now.getHours(), now.getMinutes());
     },
     methods: {
+        formatTime(h, m) {
+            let hour = h;
+            let minute = m;
+
+            if (h < 10) {
+                hour = `0${h}`;
+            }
+
+            if (minute < 10) {
+                minute = `0${minute}`;
+            }
+
+            return `${hour}:${minute}`;
+        },
         onInputEnable(value) {
             this.setState();
         },
@@ -210,6 +229,25 @@ const App = {
         setAirintakeMode(mode) {
             this.airintakeMode = mode;
             this.setState();
+        },
+        syncTime() {
+            if (tionService === null || tionDevice === null) {
+                return;
+            }
+
+            const now = new Date();
+
+            const bytes = createCommand(COMMAND_SET_TIME_PARAMS);
+
+            bytes[5] = now.getHours();
+            bytes[6] = now.getMinutes();
+            bytes[7] = now.getSeconds();
+
+            tionService.getCharacteristic(WRITE_UUID).then((characteristic) => {
+                characteristic.writeValueWithoutResponse(bytes);
+            }).catch((error) => {
+                console.error(error);
+            });
         },
         connect() {
             const options = {
@@ -303,6 +341,7 @@ const App = {
             */
             // bytes[10] = (skipSettings ? 1 : 0); // сброс настроек
 
+            /*
             const hex = [];
 
             for (let i = 0; i < 20; i++) {
@@ -316,6 +355,7 @@ const App = {
             }
 
             console.log(hex.join(' '));
+            */
 
             tionService.getCharacteristic(WRITE_UUID).then((characteristic) => {
                 characteristic.writeValueWithoutResponse(bytes);
@@ -371,18 +411,20 @@ const App = {
             this.resourceFilters = getResourceFiltersInDays(getWord2Int(data[7], data[8]));
 
             // console.log('Airintake Mode:', this.airintakeMode);
-            console.log('Timer On:', (data[2] >> 2) & 1);
-            console.log('Sound Enabled:', (data[2] >> 3) & 1);
+            // console.log('Timer On:', (data[2] >> 2) & 1);
+            // console.log('Sound Enabled:', (data[2] >> 3) & 1);
             // console.log('Version Of Firmware:', data[16], data[15]);
             // console.log('Output Temperature Left:', signValue(data[5]));
             // console.log('Output Temperature Right:', signValue(data[4]));
             // console.log('Version Of Firmware Hex:', data[16].toString(16), data[15].toString(16));
-            console.log('Error Warning:', data[11]);
-            console.log('Time:', `${data[9]}:${data[10]}`);
-            console.log('Presets On:', data[3] & 1);
-            console.log('Magic Air Connected:', (data[2] >> 5) & 1);
-            console.log('Productivity:', data[12]);
-            console.log('Unknown:', data[13], data[14]);
+            // console.log('Error Warning:', data[11]);
+            // console.log('Time:', `${data[9]}:${data[10]}`);
+            // console.log('Presets On:', data[3] & 1);
+            // console.log('Magic Air Connected:', (data[2] >> 5) & 1);
+            // console.log('Productivity:', data[12]);
+            // console.log('Unknown:', data[13], data[14]);
+
+            this.time = this.formatTime(data[9], data[10]);
 
             const now = new Date();
             let hour = now.getHours();

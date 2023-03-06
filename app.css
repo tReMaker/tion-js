@@ -81,6 +81,10 @@ body {
     height: 5px;
 }
 
+.block-time__value {
+    font-size: 20px;
+}
+
 .p-chart {
     position: relative;
 }

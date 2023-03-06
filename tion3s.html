@@ -92,6 +92,15 @@
                     <p-inputswitch v-model="heater" :disabled="!enable"></p-inputswitch>
                 </div>
             </div>
+            <div class="block block-time">
+                <div class="block__label flex justify-content-between align-items-center">
+                    <div>Время</div>
+                    <div class="block-time__value">
+                        {{time}}
+                    </div>
+                    <p-button class="p-button-rounded" icon="pi pi-sync" :disabled="!enable" @click="syncTime"></p-button>
+                </div>
+            </div>
             <div class="block block-filters">
                 <div class="block__label flex justify-content-between align-items-center">
                     <div>Дней до замены фильтров</div>
